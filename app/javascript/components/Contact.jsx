@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { DeleteButton } from "./CustomElements";
 
 class Contact extends React.Component {
   constructor(props) {
@@ -12,14 +13,27 @@ class Contact extends React.Component {
       email:      '',
       phone:      ''
     }
+
+    const { match: { path } } = this.props;
+
+    // Destroy action
+    if (/destroy$/.test(path))
+      this.destroy()
+
+    this.destroy = this.destroy.bind(this)
   }
 
   componentDidMount() {
     const {
       match: {
+        path,
         params: { id }
       }
     } = this.props;
+
+    // Destroy action
+    if (/destroy$/.test(path))
+      return
 
     const url = `/api/v1/contacts/${id}`;
 
@@ -37,6 +51,32 @@ class Contact extends React.Component {
       });
   }
 
+  destroy() {
+    const {
+      match: {
+        params: { id }
+      }
+    } = this.props;
+    const url = `/api/v1/contacts/${id}`;
+    const token = document.querySelector('meta[name="csrf-token"]').content;
+
+    fetch(url, {
+      method: "DELETE",
+      headers: {
+        "X-CSRF-Token": token,
+        "Content-Type": "application/json"
+      }
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error("Network response was not ok.");
+      })
+      .then(() => this.props.history.push("/contacts"))
+      .catch(error => console.log(error.message));
+  }
+
   render() {
     const contact = this.state;
 
@@ -45,26 +85,30 @@ class Contact extends React.Component {
         <div className="hero position-relative d-flex align-items-center justify-content-center">
           <div className="overlay bg-dark position-absolute" />
           <h1 className="display-4 position-relative ">
-            {contact.first_name}
+            {contact.last_name}, {contact.first_name}
           </h1>
         </div>
         <div className="container py-5">
           <div className="row">
-            <div className="col-sm-12 col-lg-3">
+            <div className="col-sm-12">
               <ul className="list-group">
+                <li className="list-group-item d-flex justify-content-between align-items-center">
+                  <strong>Email:</strong>
+                  {contact.email}
+                </li>
+                <li className="list-group-item d-flex justify-content-between align-items-center">
+                  <strong>Phone:</strong>
+                  {contact.phone}
+                </li>
               </ul>
             </div>
-            <div className="col-sm-12 col-lg-7">
-            </div>
-            <div className="col-sm-12 col-lg-2">
-              <button type="button" className="btn btn-danger">
-                Delete Contact
-              </button>
-            </div>
           </div>
+          <hr />
+
           <Link to="/contacts" className="btn btn-link">
-            Back to contacts
-          </Link>
+            Back
+          </Link> | &nbsp;
+          <DeleteButton destroyFn={this.destroy} />
         </div>
       </div>
     );

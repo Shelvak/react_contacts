@@ -33,8 +33,11 @@ class Api::V1::ContactsController < ApplicationController
   end
 
   def destroy
-    @contact.destroy
-    redirect_to contacts_url
+    if @contact.destroy
+      render json: {}
+    else
+      render status: 503
+    end
   end
 
   private

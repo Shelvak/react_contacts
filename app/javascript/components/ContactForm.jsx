@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import LabelWithTextInput from "./CustomInputs";
+import { LabelWithTextInput } from "./CustomElements";
 
 class ContactForm extends React.Component {
   constructor(props) {
@@ -10,15 +10,15 @@ class ContactForm extends React.Component {
       first_name: '',
       last_name:  '',
       email:      '',
-      phone:      ''
+      phone:      '',
+      status:     'new_record'
     }
 
-    this.onChange = this.onChange.bind(this)
-    this.onSubmit = this.onSubmit.bind(this)
+    this.onChange  = this.onChange.bind(this)
+    this.onSubmit  = this.onSubmit.bind(this)
   }
 
   onChange(event) {
-    console.log(`${event.target.name} => ${event.target.value}`)
     this.setState({ [event.target.name]: event.target.value })
   }
 
@@ -73,16 +73,17 @@ class ContactForm extends React.Component {
         }
         throw new Error("Network response was not ok.");
       })
-      .then(response => this.setState({...response, error: false}))
-      .catch(this.setState({ error: true }));
+      .then(response => this.setState({...response, status: 'persited'}))
+      .catch(() => this.setState({ status: 'error' }))
   }
 
   render() {
     let contact = this.state
+    console.log('tu vieja: ' + contact.status)
 
-    if (contact.error) {
+    if (contact.status === 'error') {
       return (
-        <>
+        <div className="container">
           <div className="alert alert-danger">
             Oops, something wrong. Please try later.
           </div>
@@ -90,12 +91,16 @@ class ContactForm extends React.Component {
           <Link to="/contacts" className="btn btn-link mt-3">
             Back
           </Link>
-        </>
+        </div>
       )
     }
 
     return (
       <div className="container">
+        <h2>
+          {contact.id ? `Updating ${contact.last_name} ${contact.first_name}` : 'Creating new contact' }
+        </h2>
+
         <form onSubmit={this.onSubmit}>
           <div className="form-inputs">
             <LabelWithTextInput object="contact" attribute="first_name"
@@ -116,8 +121,8 @@ class ContactForm extends React.Component {
           </div>
 
           <div className="form-actions">
-            <button type="submit" className="btn custom-button mt-3">
-              {contact.id ? 'Update' : 'Create' } Contact
+            <button type="submit" className="btn btn-primary custom-button mt-3">
+              {contact.id ? 'Update' : 'Create' }
             </button>
             <Link to="/contacts" className="btn btn-link mt-3">
               Back

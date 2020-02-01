@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { ShowLink, EditLink, DestroyLink } from "./CustomElements";
 
 class Contacts extends React.Component {
   constructor(props) {
@@ -45,12 +46,14 @@ class Contacts extends React.Component {
                  <td>{ contact.email }</td>
                  <td>{ contact.phone }</td>
                  <td>
-                   <Link to={`/contacts/${contact.id}`} className="btn custom-button">s</Link>
+                   <ShowLink href={`/contacts/${contact.id}`} />
                  </td>
                  <td>
-                   <Link to={`/contacts/${contact.id}/edit`} className="btn custom-button">e</Link>
+                   <EditLink href={`/contacts/${contact.id}/edit`} />
                  </td>
-                 <td><Link to={`/contacts/${contact.id}`} className="btn custom-button">x</Link></td>
+                 <td>
+                   <DestroyLink href={`/contacts/${contact.id}/destroy`} />
+                 </td>
               </tr>
             ))
           }
@@ -70,7 +73,7 @@ class Contacts extends React.Component {
         <div className="py-5">
           <main className="container">
             <div className="text-right mb-3">
-              <Link to="/contacts/new" className="btn custom-button">
+              <Link to="/contacts/new" className="btn btn-primary">
                 Create New Contact
               </Link>
             </div>
