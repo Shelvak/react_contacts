@@ -10,7 +10,7 @@ import App from 'App'
 // import Adapter from 'enzyme-adapter-react-16';
 
 // configure({ adapter: new Adapter() });
-
+import { BrowserRouter as Router } from 'react-router-dom';
 let container = null;
 
 beforeEach(() => {
@@ -41,10 +41,7 @@ it('Render Contact', async () => {
   );
 
   await act(async () => {
-    render((
-        <App>
-          <Contact match={{path: '/contacts/:id', params: { id: 1 }}}/>
-        </App>),
+    render((<Router><Contact match={{path: '/contacts/:id', params: { id: 1 }}} history={[]}/></Router>),
       container
     )
   });

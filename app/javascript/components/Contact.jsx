@@ -28,10 +28,12 @@ class Contact extends React.Component {
 
     await fetch(url)
       .then(response => {
-        4 * null
+        console.log(`Tu re vieja en el fetch: ${response.first_name}`)
+        console.log(`Tu re vieja en el fetch: ${response}`)
         if (response.ok) {
           return response.json();
         }
+        console.log('Manso error')
         throw new Error("Network response was not ok.");
       })
       // .then(await response => this.setState(response))
@@ -42,7 +44,8 @@ class Contact extends React.Component {
 
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    console.log('Tu re vieja')
     const {
       match: {
         path,
@@ -54,7 +57,7 @@ class Contact extends React.Component {
     if (/destroy$/.test(path))
       return;
 
-    const contact = this.fetchContact(id);
+    const contact = await this.fetchContact(id);
 
     if (contact)
       this.setState(contact);
