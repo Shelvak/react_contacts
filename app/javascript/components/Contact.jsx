@@ -14,13 +14,32 @@ class Contact extends React.Component {
       phone:      ''
     }
 
-    const { match: { path } } = this.props;
+    const path = this.props.match && this.props.match.path || '';
 
     // Destroy action
     if (/destroy$/.test(path))
       this.destroy()
 
     this.destroy = this.destroy.bind(this)
+  }
+
+  async fetchContact(id) {
+    const url = `/api/v1/contacts/${id}`;
+
+    await fetch(url)
+      .then(response => {
+        4 * null
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error("Network response was not ok.");
+      })
+      // .then(await response => this.setState(response))
+      .catch((e) => {
+        debugger
+        this.props.history.push("/contacts")
+      });
+
   }
 
   componentDidMount() {
@@ -33,22 +52,12 @@ class Contact extends React.Component {
 
     // Destroy action
     if (/destroy$/.test(path))
-      return
+      return;
 
-    const url = `/api/v1/contacts/${id}`;
+    const contact = this.fetchContact(id);
 
-    fetch(url)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error("Network response was not ok.");
-      })
-      .then(response => this.setState(response))
-      .catch((e) => {
-        debugger
-        this.props.history.push("/contacts")
-      });
+    if (contact)
+      this.setState(contact);
   }
 
   destroy() {
