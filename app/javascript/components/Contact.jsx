@@ -24,27 +24,18 @@ class Contact extends React.Component {
   }
 
   async fetchContact(id) {
-    const url = `/api/v1/contacts/${id}`;
+    try {
+      const response = await fetch(`/api/v1/contacts/${id}`);
 
-    await fetch(url)
-      .then(response => {
-        console.log(`Tu re vieja en el fetch: ${response.first_name}`)
-        console.log(`Tu re vieja en el fetch: ${response}`)
-        if (response.ok) {
-          return response.json();
-        }
-        console.log('Manso error')
-        throw new Error("Network response was not ok.");
-      })
-      // .then(await response => this.setState(response))
-      .catch((e) => {
-        debugger
-        this.props.history.push("/contacts")
-      });
+      return await response.json();
+    } catch(e) {
+      console.log('error: ' + e)
+      this.props.history.push("/contacts")
+    };
 
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     console.log('Tu re vieja')
     const {
       match: {
@@ -57,10 +48,10 @@ class Contact extends React.Component {
     if (/destroy$/.test(path))
       return;
 
-    const contact = await this.fetchContact(id);
+    const contact = this.fetchContact(id);
 
     if (contact)
-      this.setState(contact);
+      contact.then(response => this.setState(response));
   }
 
   destroy() {

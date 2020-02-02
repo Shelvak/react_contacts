@@ -4,12 +4,14 @@ import { MemoryRouter } from "react-router-dom";
 import { act } from "react-dom/test-utils"
 import Contact from "Contact"
 import App from 'App'
+
+// import { shallow } from 'enzyme';
 // import { shallow, mount, render } from 'enzyme';
 
-// import { configure } from 'enzyme';
-// import Adapter from 'enzyme-adapter-react-16';
+import { configure } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 
-// configure({ adapter: new Adapter() });
+configure({ adapter: new Adapter() });
 import { BrowserRouter as Router } from 'react-router-dom';
 let container = null;
 
@@ -25,7 +27,6 @@ afterEach(() => {
   // container = null;
 })
 
-
 it('Render Contact', async () => {
   const fakeContact = {
     id:         '1',
@@ -36,16 +37,21 @@ it('Render Contact', async () => {
   };
 
   global.fetch = jest.fn().mockImplementation(() => Promise.resolve({
-      json: () => Promise.resolve(fakeContact)
+      json: () => fakeContact
     })
   );
 
-  await act(async () => {
-    render((<Router><Contact match={{path: '/contacts/:id', params: { id: 1 }}} history={[]}/></Router>),
-      container
-    )
-  });
+  await act(
+    async () => {
+      render(
+        <Router>
+          <Contact match={{path: '/contacts/:id', params: { id: 1 }}} history={[]}/>
+        </Router>
+        ,
+        container
+      )
+    }
+  );
 
-  // debugger
-  expect(container.textContent).toContain('tanga');
+  expect(container.textContent).toContain('11223344');
 });
