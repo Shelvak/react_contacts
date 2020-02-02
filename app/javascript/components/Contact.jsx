@@ -14,13 +14,25 @@ class Contact extends React.Component {
       phone:      ''
     }
 
-    const { match: { path } } = this.props;
+    const path = this.props.match && this.props.match.path || '';
 
     // Destroy action
     if (/destroy$/.test(path))
       this.destroy()
 
     this.destroy = this.destroy.bind(this)
+  }
+
+  async fetchContact(id) {
+    try {
+      const response = await fetch(`/api/v1/contacts/${id}`);
+
+      return await response.json();
+    } catch(e) {
+      console.log('error: ' + e)
+      this.props.history.push("/contacts")
+    };
+
   }
 
   componentDidMount() {
@@ -33,25 +45,15 @@ class Contact extends React.Component {
 
     // Destroy action
     if (/destroy$/.test(path))
-      return
+      return;
 
-    const url = `/api/v1/contacts/${id}`;
+    const contact = this.fetchContact(id);
 
-    fetch(url)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error("Network response was not ok.");
-      })
-      .then(response => this.setState(response))
-      .catch((e) => {
-        debugger
-        this.props.history.push("/contacts")
-      });
+    if (contact)
+      contact.then(response => this.setState(response));
   }
 
-  destroy() {
+  async destroy() {
     const {
       match: {
         params: { id }
@@ -60,25 +62,26 @@ class Contact extends React.Component {
     const url = `/api/v1/contacts/${id}`;
     const token = document.querySelector('meta[name="csrf-token"]').content;
 
-    fetch(url, {
-      method: "DELETE",
-      headers: {
-        "X-CSRF-Token": token,
-        "Content-Type": "application/json"
-      }
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
+    try {
+      const response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          "X-CSRF-Token": token,
+          "Content-Type": "application/json"
         }
-        throw new Error("Network response was not ok.");
       })
-      .then(() => this.props.history.push("/contacts"))
-      .catch(error => console.log(error.message));
+
+      this.props.history.push("/contacts")
+    } catch(error) {
+      console.log(error.message)
+    }
   }
 
   render() {
     const contact = this.state;
+
+    if (!contact.id)
+      return (<></>)
 
     return (
       <div className="">

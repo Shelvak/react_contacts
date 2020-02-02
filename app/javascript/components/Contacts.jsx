@@ -11,17 +11,23 @@ class Contacts extends React.Component {
     };
   }
 
-  componentDidMount() {
+  async fetchContacts() {
     const url = "/api/v1/contacts";
-    fetch(url)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error("Network response was not ok.");
-      })
-      .then(response => this.setState({ contacts: response }))
-      .catch(() => this.props.history.push("/"));
+
+    try {
+      const response = await fetch(url);
+
+      return await response.json();
+    } catch(e) {
+      console.log('error: ' + e)
+    }
+  }
+
+  componentDidMount() {
+    const contacts = this.fetchContacts();
+
+    if (contacts)
+      contacts.then(response => this.setState({ contacts: response }))
   }
 
   render() {
@@ -73,7 +79,7 @@ class Contacts extends React.Component {
         <div className="py-5">
           <main className="container">
             <div className="text-right mb-3">
-              <Link to="/contacts/new" className="btn btn-primary">
+              <Link to="/contacts/new" className="btn btn-primary new-contact">
                 Create New Contact
               </Link>
             </div>

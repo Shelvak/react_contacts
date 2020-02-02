@@ -23,13 +23,13 @@ class ContactForm extends React.Component {
   }
 
   onSubmit(event) {
-    event.preventDefault()
+    event.preventDefault();
 
-    let url    = "/api/v1/contacts"
-    let method = "POST"
+    let url    = "/api/v1/contacts";
+    let method = "POST";
 
-    const {id, ...contact} = this.state
-    const token = document.querySelector('meta[name="csrf-token"]').content
+    const {id, ...contact} = this.state;
+    const token = document.querySelector('meta[name="csrf-token"]').content;
 
     // update action
     if (id) {
@@ -55,6 +55,18 @@ class ContactForm extends React.Component {
       .catch(error => console.log(error.message))
   }
 
+  async fetchContact(id) {
+    const url = `/api/v1/contacts/${id}`;
+
+    try {
+      const response = await fetch(url);
+
+      return await response.json();
+    } catch (e) {
+      this.setState({ status: 'error' })
+    }
+  }
+
   componentDidMount() {
     let {
       match: {
@@ -65,21 +77,15 @@ class ContactForm extends React.Component {
     if (!id)
       return
 
-    const url = `/api/v1/contacts/${id}`;
-    fetch(url)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error("Network response was not ok.");
-      })
-      .then(response => this.setState({...response, status: 'persited'}))
-      .catch(() => this.setState({ status: 'error' }))
+    const contact = this.fetchContact(id)
+
+    if (contact) {
+      contact.then(response => this.setState({...response, status: 'persited'}))
+    }
   }
 
   render() {
     let contact = this.state
-    console.log('tu vieja: ' + contact.status)
 
     if (contact.status === 'error') {
       return (
