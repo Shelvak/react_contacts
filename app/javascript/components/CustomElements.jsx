@@ -15,6 +15,7 @@ class LabelWithTextInput extends React.Component {
                name={this.props.attribute} id={id}
                value={this.props.value}
                required onChange={this.props.onChange} />
+        {this.props.showError(this.props.attribute)}
       </div>
     )
   }

@@ -20,7 +20,7 @@ class Api::V1::ContactsController < ApplicationController
     if @contact.save
       render json: @contact
     else
-      render status: 503
+      render json: { errors: @contact.json_errors }
     end
   end
 
@@ -28,7 +28,7 @@ class Api::V1::ContactsController < ApplicationController
     if @contact.update(contact_params)
       render json: @contact
     else
-      render json: { errors: @contact.errors.details }, status: 503
+      render json: { errors: @contact.json_errors }
     end
   end
 
@@ -36,7 +36,7 @@ class Api::V1::ContactsController < ApplicationController
     if @contact.destroy
       render json: {}
     else
-      render status: 503
+      render json: { errors: @contact.json_errors }
     end
   end
 

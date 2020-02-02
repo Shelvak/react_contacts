@@ -11,15 +11,26 @@ class ContactForm extends React.Component {
       last_name:  '',
       email:      '',
       phone:      '',
-      status:     'new_record'
+      status:     'new_record',
+      errors:     {}
     }
 
-    this.onChange  = this.onChange.bind(this)
-    this.onSubmit  = this.onSubmit.bind(this)
+    this.onChange        = this.onChange.bind(this)
+    this.onSubmit        = this.onSubmit.bind(this)
+    this.showErrorMsgFor = this.showErrorMsgFor.bind(this)
   }
 
   onChange(event) {
     this.setState({ [event.target.name]: event.target.value })
+  }
+
+  updateErrors(errors) {
+    if (!errors || errors == {}) {
+      this.setState({ errors: { base: 'Oops, something wrong' } })
+      return
+    }
+
+    this.setState({ errors: errors })
   }
 
   onSubmit(event) {
@@ -45,14 +56,15 @@ class ContactForm extends React.Component {
       },
       body: JSON.stringify(contact)
     })
+      .then(response => response.json())
       .then(response => {
-        if (response.ok) {
-          return response.json()
-        }
-        throw new Error("Network response was not ok.")
+        debugger
+        if (response.errors)
+          this.updateErrors(response.errors);
+        else
+          this.props.history.push(`/contacts/${response.id}`);
       })
-      .then(response => this.props.history.push(`/contacts/${response.id}`))
-      .catch(error => console.log(error.message))
+      .catch(error => this.updateErrors());
   }
 
   async fetchContact(id) {
@@ -84,15 +96,31 @@ class ContactForm extends React.Component {
     }
   }
 
+  showErrorMsgFor(attr) {
+    const errors = this.state.errors;
+
+    if (!errors[attr])
+      return
+
+    return (
+      <span className="text-danger">
+        { errors[attr] }
+      </span>
+    )
+  }
+
   render() {
-    let contact = this.state
+    const contact  = this.state;
+    const errorDiv = (
+      <div className="alert alert-danger">
+        Oops, something wrong. Please try later.
+      </div>
+    )
 
     if (contact.status === 'error') {
       return (
         <div className="container">
-          <div className="alert alert-danger">
-            Oops, something wrong. Please try later.
-          </div>
+          {errorDiv}
 
           <Link to="/contacts" className="btn btn-link mt-3">
             Back
@@ -107,21 +135,27 @@ class ContactForm extends React.Component {
           {contact.id ? `Updating ${contact.last_name} ${contact.first_name}` : 'Creating new contact' }
         </h2>
 
+        {contact.errors.base && errorDiv}
+
         <form onSubmit={this.onSubmit}>
           <div className="form-inputs">
             <LabelWithTextInput object="contact" attribute="first_name"
+              showError={this.showErrorMsgFor}
               label="First Name" onChange={this.onChange}
               value={contact.first_name} />
 
             <LabelWithTextInput object="contact" attribute="last_name"
+              showError={this.showErrorMsgFor}
               label="Last Name" onChange={this.onChange}
               value={contact.last_name} />
 
             <LabelWithTextInput object="contact" attribute="email"
+              showError={this.showErrorMsgFor}
               label="Email" onChange={this.onChange}
               value={contact.email} />
 
             <LabelWithTextInput object="contact" attribute="phone"
+              showError={this.showErrorMsgFor}
               label="Phone" onChange={this.onChange}
               value={contact.phone} />
           </div>
