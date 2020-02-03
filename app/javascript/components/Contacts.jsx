@@ -2,17 +2,23 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ShowLink, EditLink, DestroyLink } from "./CustomElements";
 
+import BootstrapPagination from "./BootstrapPagination";
+
 class Contacts extends React.Component {
   constructor(props) {
     super(props);
 
+    const query = new URLSearchParams(this.props.location.search);
+    const page  = +query.get('page') || 1
+
     this.state = {
-      contacts: []
+      contacts:   [],
+      pagination: { current: page }
     };
   }
 
   async fetchContacts() {
-    const url = "/api/v1/contacts";
+    const url = `/api/v1/contacts?page=${this.state.pagination.current}`;
 
     try {
       const response = await fetch(url);
@@ -23,12 +29,28 @@ class Contacts extends React.Component {
     }
   }
 
-  componentDidMount() {
+  updateCollection() {
     const contacts = this.fetchContacts();
 
     if (contacts)
-      contacts.then(response => this.setState({ contacts: response }))
+      contacts.then(response => {
+        this.setState({
+          contacts:   response.data,
+          pagination: response.pagination
+        })
+      })
   }
+
+  handlePageClick = data => {
+    // ReactPaginate request the first page on initialize
+    let page = data.selected + 1; //selected is the offset to be multiplied
+
+    this.setState({ pagination: { current: page } }, () => {
+      this.updateCollection();
+
+      this.props.history.push(`/contacts?page=${page}`)
+    });
+  };
 
   render() {
     const { contacts } = this.state;
@@ -74,6 +96,8 @@ class Contacts extends React.Component {
       </div>
     );
 
+    const pagination = this.state.pagination;
+
     return (
       <>
         <div className="py-5">
@@ -86,10 +110,13 @@ class Contacts extends React.Component {
             <div className="row">
               {contacts.length > 0 ? allContacts : noContact}
             </div>
+
+            <BootstrapPagination handlePageClick={this.handlePageClick} {...this.state.pagination} />
           </main>
         </div>
       </>
     );
   }
 }
+
 export default Contacts;

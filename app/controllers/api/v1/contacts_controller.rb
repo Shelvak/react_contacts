@@ -7,7 +7,7 @@ class Api::V1::ContactsController < ApplicationController
   def index
     @contacts = Contact.page(params[:page])
 
-    render json: @contacts
+    render json: { data: @contacts, pagination: pagination_info }
   end
 
   def show
@@ -48,5 +48,16 @@ class Api::V1::ContactsController < ApplicationController
 
     def contact_params
       params.require(:contact).permit(:first_name, :last_name, :email, :phone)
+    end
+
+    def pagination_info
+      {
+        current:  @contacts.current_page,
+        next:     @contacts.next_page,
+        per_page: @contacts.limit_value,
+        previous: @contacts.prev_page,
+        pages:    @contacts.total_pages,
+        count:    @contacts.total_count
+      }
     end
 end
