@@ -16,10 +16,6 @@ class Contact < ApplicationRecord
 
   validates :phone, format: { with: PHONE_REGEX }
 
-  def json_errors
-    errors.messages.transform_values(&:to_sentence)
-  end
-
   def self.filtered_list(query)
     query.present? ? unicode_search(query) : all
   end

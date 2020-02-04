@@ -1,0 +1,4 @@
+nestor:
+  username: nestor
+  email: nestorcoppi@gmail.com
+  password_digest: <%= BCrypt::Password.create('nestor123') %>
