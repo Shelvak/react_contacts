@@ -85,10 +85,24 @@ class DestroyLink extends React.Component {
   }
 }
 
+class SearchLink extends React.Component {
+  render() {
+    const classes = `${this.props.className} icon`
+
+    return (
+      <a title="Search" className={classes} href="#"
+         onClick={this.props.handleClick}>
+        <FontAwesomeIcon icon={faSearch} />
+      </a>
+    )
+  }
+}
+
 export {
   DeleteButton,
   LabelWithTextInput,
   ShowLink,
   EditLink,
   DestroyLink,
+  SearchLink
 };

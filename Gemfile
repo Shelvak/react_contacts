@@ -5,6 +5,7 @@ ruby '2.6.3'
 
 gem 'rails', '~> 6.0.2'
 gem 'pg'
+gem 'pg_search'
 gem 'iodine'
 
 gem 'sass-rails', '>= 6'

@@ -58,7 +58,6 @@ class ContactForm extends React.Component {
     })
       .then(response => response.json())
       .then(response => {
-        debugger
         if (response.errors)
           this.updateErrors(response.errors);
         else

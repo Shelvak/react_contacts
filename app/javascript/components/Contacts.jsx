@@ -1,6 +1,7 @@
 import React from "react";
+import $ from "jquery";
 import { Link } from "react-router-dom";
-import { ShowLink, EditLink, DestroyLink } from "./CustomElements";
+import { ShowLink, EditLink, DestroyLink, SearchLink } from "./CustomElements";
 
 import BootstrapPagination from "./BootstrapPagination";
 
@@ -15,10 +16,20 @@ class Contacts extends React.Component {
       contacts:   [],
       pagination: { current: page }
     };
+
+    this.handlePageClick    = this.handlePageClick.bind(this);
+    this.handleSearchClick  = this.handleSearchClick.bind(this);
+    this.handleSearchChange = this.handleSearchChange.bind(this);
+    this.handleSearchEnter  = this.handleSearchEnter.bind(this);
   }
 
   async fetchContacts() {
-    const url = `/api/v1/contacts?page=${this.state.pagination.current}`;
+    let params = { page: this.state.pagination.current };
+
+    if (this.state.q)
+      params['q'] = this.state.q;
+
+    const url = `/api/v1/contacts?${$.param(params)}`;
 
     try {
       const response = await fetch(url);
@@ -41,7 +52,7 @@ class Contacts extends React.Component {
       })
   }
 
-  handlePageClick = data => {
+  handlePageClick(data) {
     // ReactPaginate request the first page on initialize
     let page = data.selected + 1; //selected is the offset to be multiplied
 
@@ -51,6 +62,21 @@ class Contacts extends React.Component {
       this.props.history.push(`/contacts?page=${page}`)
     });
   };
+
+  handleSearchChange(event) {
+    this.setState({ [event.target.name]: event.target.value })
+  }
+
+  handleSearchEnter(event) {
+    if (event.key === 'Enter')
+      this.updateCollection()
+  }
+
+  handleSearchClick(event) {
+    event.preventDefault()
+
+    this.updateCollection()
+  }
 
   render() {
     const { contacts } = this.state;
@@ -102,10 +128,21 @@ class Contacts extends React.Component {
       <>
         <div className="py-5">
           <main className="container">
-            <div className="text-right mb-3">
-              <Link to="/contacts/new" className="btn btn-primary new-contact">
-                Create New Contact
-              </Link>
+            <div className="row">
+              <div className="text-right col-sm-9">
+                <div className="input-group mb-3">
+                  <input type="text" className="form-control" name="q"
+                    onChange={this.handleSearchChange} onKeyPress={this.handleSearchEnter}/>
+                  <div className="input-group-append">
+                    <SearchLink handleClick={this.handleSearchClick} className="btn btn-outline-primary" />
+                  </div>
+                </div>
+              </div>
+              <div className="text-right col-sm-3">
+                <Link to="/contacts/new" className="btn btn-primary new-contact">
+                  Create New Contact
+                </Link>
+              </div>
             </div>
             <div className="row">
               {contacts.length > 0 ? allContacts : noContact}

@@ -5,7 +5,7 @@ class Api::V1::ContactsController < ApplicationController
 
   # GET /contacts
   def index
-    @contacts = Contact.page(params[:page])
+    @contacts = Contact.filtered_list(params[:q]).page(params[:page])
 
     render json: { data: @contacts, pagination: pagination_info }
   end
