@@ -5,7 +5,7 @@ class Contact < ApplicationRecord
     against: { last_name: 'A', first_name: 'B', email: 'C' },
     ignoring: :accents,
     using: {
-      tsearch: { prefix: true },
+      tsearch: { prefix: true, any_word: true },
       trigram: { threshold: 0.4 }
     }
 

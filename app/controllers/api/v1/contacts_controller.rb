@@ -1,9 +1,6 @@
 class Api::V1::ContactsController < ApplicationController
   before_action :set_contact, only: [:show, :edit, :update, :destroy]
 
-  # respond_to :json
-
-  # GET /contacts
   def index
     @contacts = Contact.filtered_list(params[:q]).page(params[:page])
 

@@ -3,6 +3,11 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :contacts, except: [:new, :edit]
       resources :users, only: [:create, :show, :index]
+
+
+      post '/signin', to: 'sessions#create'
+      delete '/signout', to: 'sessions#destroy'
+      get '/logged_in', to: 'sessions#show'
     end
   end
 
