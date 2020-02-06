@@ -14,4 +14,17 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
     FileUtils.rm_rf(Rails.root.join('public', 'packs-test'))
   end
+
+  def login
+    visit root_url
+
+    assert_selector 'h1', text: 'Log In'
+
+    fill_in 'Username', with: @user.username
+    fill_in 'Password', with: 'nestor123'
+
+    click_on 'Log In'
+
+    page.has_no_css?('.alert.alert-danger')
+  end
 end

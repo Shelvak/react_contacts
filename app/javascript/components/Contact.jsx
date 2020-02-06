@@ -95,11 +95,11 @@ class Contact extends React.Component {
           <div className="row">
             <div className="col-sm-12">
               <ul className="list-group">
-                <li className="list-group-item d-flex justify-content-between align-items-center">
+                <li className="list-group-item d-flex justify-content-between align-items-center email">
                   <strong>Email:</strong>
                   {contact.email}
                 </li>
-                <li className="list-group-item d-flex justify-content-between align-items-center">
+                <li className="list-group-item d-flex justify-content-between align-items-center phone">
                   <strong>Phone:</strong>
                   {contact.phone}
                 </li>
