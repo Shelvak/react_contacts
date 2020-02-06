@@ -13,15 +13,6 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
-  test 'update' do
-    assert_no_difference 'User.count' do
-      # assert @user.update(name: 'Updated name'),
-      #        @user.errors.full_messages.join('; ')
-    end
-
-    # assert_equal 'Updated name', @user.reload.name
-  end
-
   test 'validates blank attributes' do
     @user.username = nil
     @user.email    = '  '

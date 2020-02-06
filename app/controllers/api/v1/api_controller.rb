@@ -1,5 +1,4 @@
 class Api::V1::ApiController < ActionController::API
-  # skip_before_action :verify_authenticity_token
 
   def login!(user)
     session[:user_id] = user.id

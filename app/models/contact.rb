@@ -11,10 +11,11 @@ class Contact < ApplicationRecord
 
   validates :first_name, :last_name, :email, :phone, presence: true
   validates :email,
-    format: { with: EMAIL_REGEX },
-    uniqueness: true, if: :will_save_change_to_email?
-
+    format:     { with: EMAIL_REGEX },
+    uniqueness: { scope: :user_id }, if: :will_save_change_to_email?
   validates :phone, format: { with: PHONE_REGEX }
+
+  belongs_to :user
 
   def self.filtered_list(query)
     query.present? ? unicode_search(query) : all

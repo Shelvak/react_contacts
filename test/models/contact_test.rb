@@ -11,7 +11,8 @@ class ContactTest < ActiveSupport::TestCase
         first_name: 'Test',
         last_name:  'Test',
         email:      'test@sample.com',
-        phone:      '+44332211'
+        phone:      '+44332211',
+        user_id:    @contact.user_id
       )
     end
   end

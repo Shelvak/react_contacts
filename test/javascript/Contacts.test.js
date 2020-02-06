@@ -14,7 +14,9 @@ const mockContactsFetchAndRender = async (data = {}) => {
   });
 
   global.fetch = jest.fn().mockImplementation(() => Promise.resolve({
-    json: () => contacts
+    json: () => {
+      return { data: contacts, pagination: {} };
+    }
   }));
 
   await act(

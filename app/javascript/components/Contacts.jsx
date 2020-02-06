@@ -9,7 +9,7 @@ class Contacts extends React.Component {
   constructor(props) {
     super(props);
 
-    const query = new URLSearchParams(this.props.location.search);
+    const query = new URLSearchParams((this.props.location || {}).search);
     const page  = +query.get('page') || 1
 
     this.state = {
