@@ -3,6 +3,8 @@ import { render } from "react-dom";
 import {BrowserRouter, Switch, Route} from 'react-router-dom'
 import axios from 'axios'
 
+import AppConfig from "./AppConfig";
+
 const LoggedInRouter = React.lazy(() => import('../routes/LoggedInRouter'));
 const PublicRouter = React.lazy(() => import('../routes/PublicRouter'));
 
@@ -21,7 +23,7 @@ class App extends React.Component {
   }
 
   loginStatus = () => {
-    axios.get('http://localhost:3000/api/v1/logged_in', {withCredentials: true})
+    axios.get(`${AppConfig.serverUrl}/api/v1/logged_in`, {withCredentials: true})
       .then(response => {
         if (response.data) {
           this.handleLogin(response.data)
@@ -47,7 +49,7 @@ class App extends React.Component {
   }
 
   signOut = (history) => {
-    axios.delete('http://localhost:3000/api/v1/signout', {withCredentials: true})
+    axios.delete(`${AppConfig.serverUrl}/api/v1/signout`, {withCredentials: true})
       .then(response => {
         this.handleLogout()
         history.push('/')

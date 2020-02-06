@@ -1,7 +1,8 @@
 import React from 'react';
 import axios from 'axios'
-import { LabelWithTextInput } from "../CustomElements";
 
+import AppConfig from "../AppConfig";
+import { LabelWithTextInput } from "../CustomElements";
 import { showErrorMsgFor, setStateOnChange, updateErrors } from "../FormHelpers";
 
 class Signup extends React.Component {
@@ -13,7 +14,7 @@ class Signup extends React.Component {
       email:                 '',
       password:              '',
       password_confirmation: '',
-      errors:                ''
+      errors:                {}
     };
 
     this.showErrorMsgFor  = showErrorMsgFor.bind(this);
@@ -37,7 +38,7 @@ class Signup extends React.Component {
       password_confirmation: password_confirmation
     };
 
-    axios.post('http://localhost:3000/api/v1/users', { user }, { withCredentials: true })
+    axios.post(`${AppConfig.serverUrl}/api/v1/users`, { user }, { withCredentials: true })
       .then(response => {
         if (response.data.errors) {
           this.setState({

@@ -11,7 +11,6 @@ class LoggedInRouter extends React.Component {
   history = createBrowserHistory(this.props);
 
   render()  {
-    debugger
     return (
       <Router history={this.history}>
         <NavBar {...this.props} history={this.history} />

@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
+import AppConfig from "../AppConfig";
 import { LabelWithTextInput } from "../CustomElements";
 import { showErrorMsgFor, setStateOnChange, updateErrors } from "../FormHelpers";
 
@@ -28,7 +29,7 @@ class Signin extends React.Component {
       password: this.state.password
     };
 
-    axios.post('http://localhost:3000/api/v1/signin', {user}, {withCredentials: true})
+    axios.post(`${AppConfig.serverUrl}/api/v1/signin`, {user}, {withCredentials: true})
       .then(response => {
         if (response.data.errors) {
           this.updateErrors({base: response.data.errors})
