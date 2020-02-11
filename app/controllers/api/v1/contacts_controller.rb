@@ -1,4 +1,5 @@
 class Api::V1::ContactsController < Api::V1::ApiController
+  before_action :check_auth
   before_action :set_contact, only: [:show, :edit, :update, :destroy]
 
   def index
@@ -38,6 +39,12 @@ class Api::V1::ContactsController < Api::V1::ApiController
   end
 
   private
+
+  def check_auth
+    unless current_user
+      render status: 401
+    end
+  end
 
   def contacts_scope
     current_user.contacts
